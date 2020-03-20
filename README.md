@@ -38,11 +38,11 @@ Lo script:
 
 ### Configurazione dello script
 Lo script può essere configurato tramite variabili di ambiente (comode anche nello usecase Docker), tutte opzionali, in particolare:
-* `LISTEN_ADDRESS` rappresenta l'indirizzo su cui lo script rimarrà in ascolto (default `0.0.0.0`)
-* `LISTEN_PORT` rappresenta la porta su cui lo script rimarrà in ascolto (default `8080`)
-* `SCHEDULED_INTERVAL` rappresenta l'intervallo temporale con cui verrà fatta l'operazione di polling, in secondi (default: `30*60`, ovvero 30 minuti)
-* `CYBERSAIYAN_FEED_URL` contiene l'indirizzo del server TAXII di CyberSaiyan (default `infosharing.cybersaiyan.it`)
-* `CYBERSAIYAN_COLLECTION_NAME` contiene il nome della collection TAXII (default `CS-COMMUNITY-TAXII`)
+* `CS_MISP_FEED_LISTEN_ADDRESS` rappresenta l'indirizzo su cui lo script rimarrà in ascolto (default `0.0.0.0`)
+* `CS_MISP_LISTEN_PORT` rappresenta la porta su cui lo script rimarrà in ascolto (default `8080`)
+* `CS_MISP_FEED_SCHEDULED_INTERVAL` rappresenta l'intervallo temporale con cui verrà fatta l'operazione di polling, in secondi (default: `30*60`, ovvero 30 minuti)
+* `CS_TAXII_URL_URL` contiene l'indirizzo del server TAXII di CyberSaiyan (default `infosharing.cybersaiyan.it`)
+* `CS_TAXII_COLLECTION_NAME` contiene il nome della collection TAXII (default `CS-COMMUNITY-TAXII`)
 
 ### Configurazione MISP
 
