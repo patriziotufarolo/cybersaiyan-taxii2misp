@@ -113,7 +113,7 @@ def srv_get_event(path):
     elif path.lower() == "hashes.csv":
         return Response('\n'.join(['{},{}'.format(f_hash[0], f_hash[1])
                                    for f_hash in f_hashes]),
-                        mimetype="ẗext/csv")
+                        mimetype="text/csv")
     elif path == "events":
         return f_events
     else:
