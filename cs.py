@@ -4,6 +4,11 @@ import atexit
 import hashlib
 import uuid
 import os
+import sqlite3
+db_conn = sqlite3.connect('db.db', check_same_thread=False)
+db_cursor = db_conn.cursor()
+db_cursor.execute("CREATE TABLE IF NOT EXISTS hashes (hash text, uuid text)")
+db_conn.commit()
 
 from flask import Flask, Response
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -150,9 +155,15 @@ def poll_taxii():
 
         cs_event = (title, information_source)
         cs_event_hash = hash(cs_event)
-        cs_event_md5 = hashlib.md5()
-        cs_event_md5.update((title+information_source).encode('utf-8'))
 
+
+        db_cursor.execute("SELECT uuid FROM hashes WHERE hash = '%s'" % cs_event_hash)
+        element = db_cursor.fetchone()
+        if element:
+            e_uuid = element[0]
+        else:
+            e_uuid = str(uuid.uuid4())
+            db_cursor.execute("INSERT INTO hashes VALUES (?,?)", (cs_event_hash,e_uuid,))
 
         if cs_event_hash not in results_dict:
             results_dict[cs_event_hash] = MISPEvent()
@@ -160,7 +171,7 @@ def poll_taxii():
         m_ev = results_dict[cs_event_hash]
         m_ev.info = str(pkg.stix_header.description)
         m_ev.analysis = 0
-        m_ev.uuid = str(uuid.UUID(cs_event_md5.hexdigest()))
+        m_ev.uuid = e_uuid
 
         #m_ev.org = "CyberSaiyan"
 
@@ -233,7 +244,7 @@ def poll_taxii():
                 attr.disable_correlation = False
                 attr.to_ids = True
 
-            m_ev.date = last_ts
+            m_ev.date = last_ts.strftime("%Y-%m-%d")
             m_ev.attributes.append(attr)
 
     c_hashes, c_manifest, c_events = list(), dict(), dict()
@@ -262,5 +273,6 @@ if __name__ == "__main__":
                       seconds=SCHEDULED_INTERVAL)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
+    atexit.register(lambda: db_conn.close())
 
     app.run(host=LISTEN_ADDRESS, port=LISTEN_PORT)
