@@ -247,6 +247,7 @@ def poll_taxii():
             m_ev.date = last_ts.strftime("%Y-%m-%d")
             m_ev.attributes.append(attr)
 
+    db_conn.commit()
     c_hashes, c_manifest, c_events = list(), dict(), dict()
 
     for event in results_dict.values():
